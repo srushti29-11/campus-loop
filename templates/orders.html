@@ -1,0 +1,331 @@
+{% extends "base.html" %}
+
+{% block title %}My Orders | Campus Loop{% endblock %}
+
+{% block extra_css %}
+
+<style>
+    .orders-container {
+        max-width: 1050px;
+        margin: 15px auto;
+    }
+
+    .page-title {
+        color: #f8fafc;
+        font-size: 2.3rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+    }
+
+    .page-subtitle {
+        color: #94a3b8;
+    }
+
+    .order-card {
+        background: #111827;
+        border: 1px solid #243047;
+        border-radius: 18px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.18);
+        transition: all 0.25s ease;
+    }
+
+    .order-card:hover {
+        border-color: #334a70;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+    }
+
+    .order-header {
+        border-bottom: 1px solid #243047;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+    }
+
+    .order-id {
+        color: #f8fafc;
+        font-weight: 700;
+    }
+
+    .order-date {
+        color: #64748b;
+    }
+
+    .product-item {
+        padding: 14px 0;
+        border-bottom: 1px solid #243047;
+    }
+
+    .product-item:last-child {
+        border-bottom: none;
+    }
+
+    .product-name {
+        color: #e2e8f0;
+        font-weight: 600;
+    }
+
+    .quantity {
+        color: #64748b;
+    }
+
+    .product-price {
+        color: #60a5fa;
+        font-weight: 700;
+    }
+
+    .free {
+        color: #34d399;
+    }
+
+    .order-info {
+        color: #94a3b8;
+    }
+
+    .order-info strong {
+        color: #e2e8f0;
+    }
+
+    .address-box {
+        background: #0f172a;
+        border: 1px solid #243047;
+        border-radius: 10px;
+        padding: 12px 15px;
+        color: #cbd5e1;
+        margin-top: 8px;
+    }
+
+    .total-label {
+        color: #f8fafc;
+        font-weight: 700;
+    }
+
+    .order-total {
+        color: #60a5fa;
+        font-size: 1.25rem;
+        font-weight: 800;
+    }
+
+    .empty-box {
+        background: #111827;
+        border: 1px solid #243047;
+        border-radius: 18px;
+        padding: 70px 20px;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.18);
+    }
+
+    .empty-icon {
+        color: #475569;
+        font-size: 55px;
+    }
+
+    .empty-box h3 {
+        color: #f8fafc;
+    }
+
+    .empty-box p {
+        color: #94a3b8;
+    }
+
+    .marketplace-btn {
+        background: #2563eb;
+        border: 1px solid #2563eb;
+        color: white;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    .marketplace-btn:hover {
+        background: #1d4ed8;
+        border-color: #1d4ed8;
+        color: white;
+    }
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="orders-container">
+
+    <!-- Header -->
+
+    <div class="mb-4">
+
+        <h1 class="page-title">
+            My Orders
+        </h1>
+
+        <p class="page-subtitle mb-0">
+            View your Campus Loop purchases and order status.
+        </p>
+
+    </div>
+
+
+    {% if orders %}
+
+        {% for order in orders %}
+
+            <div class="order-card">
+
+                <!-- Order Header -->
+
+                <div class="order-header">
+
+                    <div class="d-flex justify-content-between align-items-center gap-3">
+
+                        <div>
+
+                            <div class="order-id">
+                                Order #{{ order.id }}
+                            </div>
+
+                            <small class="order-date">
+                                <i class="bi bi-calendar3 me-1"></i>
+                                {{ order.created_at|date:"d M Y, h:i A" }}
+                            </small>
+
+                        </div>
+
+
+                        <span
+                            class="badge
+                            {% if order.status == 'confirmed' %}
+                                text-bg-success
+                            {% elif order.status == 'completed' %}
+                                text-bg-primary
+                            {% elif order.status == 'cancelled' %}
+                                text-bg-danger
+                            {% else %}
+                                text-bg-warning
+                            {% endif %}"
+                        >
+                            {{ order.get_status_display }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Products -->
+
+                <div>
+
+                    {% for item in order.items %}
+
+                        <div class="product-item">
+
+                            <div class="d-flex justify-content-between align-items-center gap-3">
+
+                                <div>
+
+                                    <div class="product-name">
+                                        {{ item.product.name }}
+                                    </div>
+
+                                    <div class="quantity small mt-1">
+                                        Quantity: {{ item.quantity }}
+                                    </div>
+
+                                </div>
+
+
+                                <div>
+
+                                    {% if item.product.listing_type == "free" %}
+
+                                        <span class="product-price free">
+                                            FREE
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="product-price">
+                                            ₹{{ item.price|floatformat:2 }}
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Order Information -->
+
+                <div class="mt-4">
+
+                    <div class="order-info">
+
+                        <div class="fw-semibold">
+                            <i class="bi bi-geo-alt me-1"></i>
+                            Delivery / Handover Address
+                        </div>
+
+                        <div class="address-box">
+                            {{ order.delivery_address }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+
+                        <span class="total-label">
+                            Total Amount
+                        </span>
+
+                        <span class="order-total">
+                            ₹{{ order.total_amount|floatformat:2 }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+
+    {% else %}
+
+        <!-- Empty State -->
+
+        <div class="empty-box">
+
+            <i class="bi bi-bag-x empty-icon"></i>
+
+            <h3 class="mt-3">
+                No Orders Yet
+            </h3>
+
+            <p>
+                Your purchases will appear here.
+            </p>
+
+            <a
+                href="{% url 'products' %}"
+                class="btn marketplace-btn mt-2"
+            >
+                <i class="bi bi-shop me-1"></i>
+                Explore Marketplace
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

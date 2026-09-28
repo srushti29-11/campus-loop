@@ -1,0 +1,380 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} | Campus Loop{% endblock %}
+
+{% block extra_css %}
+
+<style>
+    .product-container {
+        max-width: 1100px;
+        margin: 20px auto;
+    }
+
+    .product-card {
+        background: #111827;
+        border: 1px solid #243047;
+        border-radius: 22px;
+        padding: 30px;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.22);
+    }
+
+    .product-image {
+        height: 460px;
+        background: #0f172a;
+        border: 1px solid #243047;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .no-image {
+        font-size: 70px;
+        color: #475569;
+    }
+
+    .category-badge {
+        background: #172033;
+        color: #60a5fa;
+        border: 1px solid #263b5d;
+        padding: 7px 11px;
+        border-radius: 8px;
+        font-size: 0.78rem;
+    }
+
+    .mode-badge {
+        background: #2563eb;
+        color: white;
+        padding: 7px 11px;
+        border-radius: 8px;
+        font-size: 0.78rem;
+    }
+
+    .product-title {
+        color: #f8fafc;
+        font-size: 2.3rem;
+        font-weight: 800;
+        line-height: 1.2;
+        margin-top: 18px;
+    }
+
+    .price {
+        color: #60a5fa;
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 18px 0;
+    }
+
+    .free {
+        color: #34d399;
+    }
+
+    .description {
+        color: #94a3b8;
+        line-height: 1.8;
+    }
+
+    .info-box {
+        background: #0f172a;
+        border: 1px solid #243047;
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin-bottom: 10px;
+        color: #cbd5e1;
+    }
+
+    .info-box strong {
+        color: #f8fafc;
+    }
+
+    .seller-box {
+        border-top: 1px solid #243047;
+        margin-top: 25px;
+        padding-top: 20px;
+        color: #cbd5e1;
+    }
+
+    .seller-box h6 {
+        color: #f8fafc;
+    }
+
+    .seller-box i {
+        color: #60a5fa;
+    }
+
+    .btn-main {
+        background: #2563eb;
+        border: 1px solid #2563eb;
+        color: white;
+        border-radius: 10px;
+        padding: 12px 20px;
+        font-weight: 600;
+    }
+
+    .btn-main:hover {
+        background: #1d4ed8;
+        border-color: #1d4ed8;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .message-btn {
+        border-color: #3b82f6;
+        color: #60a5fa;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    .message-btn:hover {
+        background: #2563eb;
+        border-color: #2563eb;
+        color: white;
+    }
+
+    .back-btn {
+        color: #94a3b8;
+        border-color: #334155;
+        border-radius: 10px;
+    }
+
+    .back-btn:hover {
+        color: #f8fafc;
+        background: #172033;
+        border-color: #475569;
+    }
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="product-container">
+
+    <div class="product-card">
+
+        <div class="row g-5">
+
+            <!-- Product Image -->
+
+            <div class="col-lg-6">
+
+                <div class="product-image">
+
+                    {% if product.image %}
+
+                        <img
+                            src="{{ product.image.url }}"
+                            alt="{{ product.name }}"
+                        >
+
+                    {% else %}
+
+                        <i class="bi bi-image no-image"></i>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- Product Details -->
+
+            <div class="col-lg-6">
+
+                <div class="d-flex gap-2 flex-wrap">
+
+                    <span class="category-badge">
+                        {{ product.category.name }}
+                    </span>
+
+                    <span class="mode-badge">
+                        {{ product.get_listing_type_display }}
+                    </span>
+
+                </div>
+
+
+                <h1 class="product-title">
+                    {{ product.name }}
+                </h1>
+
+
+                {% if product.listing_type == "free" %}
+
+                    <div class="price free">
+                        FREE
+                    </div>
+
+                {% else %}
+
+                    <div class="price">
+                        ₹{{ product.price }}
+                    </div>
+
+                {% endif %}
+
+
+                <p class="description">
+                    {{ product.description }}
+                </p>
+
+
+                <!-- Product Information -->
+
+                <div class="mt-4">
+
+                    <div class="info-box">
+                        <strong>Condition:</strong>
+                        {{ product.get_condition_display }}
+                    </div>
+
+                    <div class="info-box">
+                        <strong>Available Quantity:</strong>
+                        {{ product.stock }}
+                    </div>
+
+                    <div class="info-box">
+                        <strong>Listing Type:</strong>
+                        {{ product.get_listing_type_display }}
+                    </div>
+
+                </div>
+
+
+                <!-- Actions -->
+
+                <div class="mt-4">
+
+                    {% if user.is_authenticated %}
+
+                        {% if user == product.seller %}
+
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-1"></i>
+                                This is your product listing.
+                            </div>
+
+                        {% elif product.listing_type == "exchange" %}
+
+                            <a
+                                href="{% url 'send_message' product.seller.id %}?product={{ product.id }}"
+                                class="btn btn-main w-100 mb-2"
+                            >
+                                <i class="bi bi-arrow-left-right me-1"></i>
+                                Contact Seller for Exchange
+                            </a>
+
+                        {% else %}
+
+                            {% if product.stock > 0 %}
+
+                                <a
+                                    href="{% url 'add_to_cart' product.id %}"
+                                    class="btn btn-main w-100 mb-2"
+                                >
+                                    <i class="bi bi-cart-plus me-1"></i>
+                                    Add to Cart
+                                </a>
+
+                            {% else %}
+
+                                <button
+                                    class="btn btn-secondary w-100 mb-2"
+                                    disabled
+                                >
+                                    Out of Stock
+                                </button>
+
+                            {% endif %}
+
+                            <a
+                                href="{% url 'send_message' product.seller.id %}?product={{ product.id }}"
+                                class="btn message-btn w-100"
+                            >
+                                <i class="bi bi-chat-dots me-1"></i>
+                                Message Seller
+                            </a>
+
+                        {% endif %}
+
+                    {% else %}
+
+                        <a
+                            href="{% url 'login' %}"
+                            class="btn btn-main w-100"
+                        >
+                            Login to Continue
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Seller -->
+
+                <div class="seller-box">
+
+                    <h6 class="fw-bold">
+                        <i class="bi bi-person-circle me-1"></i>
+                        Seller
+                    </h6>
+
+                    <p class="mb-1">
+
+                        {% if product.seller.first_name %}
+
+                            {{ product.seller.first_name }}
+                            {{ product.seller.last_name }}
+
+                        {% else %}
+
+                            Student Seller
+
+                        {% endif %}
+
+                    </p>
+
+                    {% if product.seller.college %}
+
+                        <p class="small text-secondary mb-0">
+                            {{ product.seller.college }}
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Back Button -->
+
+    <div class="mt-4">
+
+        <a
+            href="{% url 'products' %}"
+            class="btn back-btn"
+        >
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Marketplace
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Successful | Campus Loop{% endblock %}
+
+{% block extra_css %}
+
+<style>
+    .success-container {
+        max-width: 700px;
+        margin: 25px auto;
+    }
+
+    .success-card {
+        background: #111827;
+        border: 1px solid #243047;
+        border-radius: 22px;
+        padding: 45px 35px;
+        text-align: center;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.22);
+    }
+
+    .success-icon {
+        font-size: 70px;
+        color: #34d399;
+    }
+
+    .success-title {
+        color: #f8fafc;
+        font-weight: 800;
+        margin-top: 20px;
+    }
+
+    .success-subtitle {
+        color: #94a3b8;
+    }
+
+    .details {
+        background: #0f172a;
+        border: 1px solid #243047;
+        border-radius: 14px;
+        padding: 22px;
+        text-align: left;
+        margin-top: 30px;
+    }
+
+    .detail-row {
+        color: #94a3b8;
+    }
+
+    .detail-row strong {
+        color: #e2e8f0;
+    }
+
+    .detail-divider {
+        border-color: #243047;
+    }
+
+    .info-box {
+        background: #172033;
+        border: 1px solid #263b5d;
+        color: #cbd5e1;
+        border-radius: 12px;
+        padding: 15px;
+    }
+
+    .info-box i {
+        color: #60a5fa;
+    }
+
+    .primary-btn {
+        background: #2563eb;
+        border: 1px solid #2563eb;
+        color: white;
+        border-radius: 10px;
+        padding: 12px 22px;
+        font-weight: 600;
+    }
+
+    .primary-btn:hover {
+        background: #1d4ed8;
+        border-color: #1d4ed8;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .secondary-btn {
+        color: #94a3b8;
+        border-color: #334155;
+        border-radius: 10px;
+        padding: 12px 22px;
+        font-weight: 600;
+    }
+
+    .secondary-btn:hover {
+        background: #172033;
+        border-color: #475569;
+        color: #f8fafc;
+    }
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="success-container">
+
+    <div class="success-card">
+
+        <!-- Success Icon -->
+
+        <div class="success-icon">
+            <i class="bi bi-check-circle-fill"></i>
+        </div>
+
+
+        <!-- Heading -->
+
+        <h1 class="success-title">
+            Payment Successful!
+        </h1>
+
+        <p class="success-subtitle">
+            Your order has been confirmed.
+        </p>
+
+
+        <!-- Payment Details -->
+
+        <div class="details">
+
+            <div class="d-flex justify-content-between align-items-center mb-3 detail-row">
+
+                <span>
+                    Order ID
+                </span>
+
+                <strong>
+                    #{{ order.id }}
+                </strong>
+
+            </div>
+
+
+            <hr class="detail-divider">
+
+
+            <div class="d-flex justify-content-between align-items-center my-3 detail-row">
+
+                <span>
+                    Amount
+                </span>
+
+                <strong>
+                    ₹{{ payment.amount }}
+                </strong>
+
+            </div>
+
+
+            <hr class="detail-divider">
+
+
+            <div class="d-flex justify-content-between align-items-center my-3 detail-row">
+
+                <span>
+                    Payment Method
+                </span>
+
+                <strong>
+                    {{ payment.get_payment_method_display }}
+                </strong>
+
+            </div>
+
+
+            <hr class="detail-divider">
+
+
+            <div class="d-flex justify-content-between align-items-center my-3 detail-row">
+
+                <span>
+                    Transaction ID
+                </span>
+
+                <strong>
+                    {{ payment.transaction_id }}
+                </strong>
+
+            </div>
+
+
+            <hr class="detail-divider">
+
+
+            <div class="d-flex justify-content-between align-items-center detail-row">
+
+                <span>
+                    Order Status
+                </span>
+
+                <span class="badge text-bg-success">
+                    {{ order.get_status_display }}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Seller Communication -->
+
+        <div class="info-box text-start mt-4">
+
+            <div class="d-flex">
+
+                <i class="bi bi-chat-dots fs-5 me-3"></i>
+
+                <div>
+
+                    <strong class="text-light">
+                        Coordinate the Handover
+                    </strong>
+
+                    <div class="small mt-1">
+                        Use Campus Loop messaging to communicate
+                        with the seller regarding the item handover.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Actions -->
+
+        <div class="mt-4">
+
+            <a
+                href="{% url 'products' %}"
+                class="btn primary-btn"
+            >
+                <i class="bi bi-shop me-1"></i>
+                Continue Shopping
+            </a>
+
+
+            <a
+                href="{% url 'dashboard' %}"
+                class="btn secondary-btn ms-2"
+            >
+                <i class="bi bi-speedometer2 me-1"></i>
+                Dashboard
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

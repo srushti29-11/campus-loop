@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Notifications | Campus Loop Admin</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            background: #080d18;
+            color: #f8fafc;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 250px;
+            background: #111827;
+            border-right: 1px solid #243047;
+            padding: 25px 18px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .brand {
+            font-size: 22px;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 35px;
+        }
+
+        .brand span {
+            color: #60a5fa;
+        }
+
+        .sidebar-section {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 22px 10px 10px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            color: #94a3b8;
+            text-decoration: none;
+            padding: 11px 13px;
+            margin-bottom: 5px;
+            border-radius: 9px;
+            font-size: 14px;
+            transition: 0.2s ease;
+        }
+
+        .sidebar a:hover {
+            background: #172033;
+            color: #f8fafc;
+        }
+
+        .sidebar a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .sidebar hr {
+            border-color: #243047;
+            margin: 22px 0;
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .main {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            min-height: 100vh;
+            padding: 32px;
+        }
+
+        .topbar {
+            background: #111827;
+            border: 1px solid #243047;
+            border-radius: 14px;
+            padding: 22px 25px;
+            margin-bottom: 25px;
+        }
+
+        .page-title {
+            color: #f8fafc;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        .notification-count {
+            background: #172033;
+            border: 1px solid #243047;
+            color: #60a5fa;
+            padding: 10px 15px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* =========================
+           FILTER
+        ========================= */
+
+        .filter-card {
+            background: #111827;
+            border: 1px solid #243047;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            color: #cbd5e1;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        .form-control,
+        .form-select {
+            background: #0b1120 !important;
+            color: #f8fafc !important;
+            border: 1px solid #334155 !important;
+            border-radius: 9px;
+            min-height: 42px;
+        }
+
+        .form-control::placeholder {
+            color: #64748b;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            background: #0b1120 !important;
+            color: #f8fafc !important;
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12) !important;
+        }
+
+        .form-select option {
+            background: #0b1120;
+            color: #f8fafc;
+        }
+
+        .btn-filter {
+            background: #2563eb;
+            border: none;
+            color: white;
+            border-radius: 9px;
+            min-height: 42px;
+            font-weight: 600;
+        }
+
+        .btn-filter:hover {
+            background: #1d4ed8;
+            color: white;
+        }
+
+        /* =========================
+           NOTIFICATION CARD
+        ========================= */
+
+        .notification-card {
+            background: #111827;
+            border: 1px solid #243047;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 13px;
+            display: flex;
+            gap: 18px;
+            width: 100%;
+            transition: 0.2s ease;
+        }
+
+        .notification-card:hover {
+            border-color: #334155;
+            transform: translateY(-1px);
+        }
+
+        .notification-icon {
+            width: 48px;
+            min-width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #172033;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .notification-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .notification-title {
+            color: #f8fafc;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .notification-message {
+            color: #94a3b8;
+            line-height: 1.55;
+            margin-top: 8px;
+            word-break: break-word;
+        }
+
+        .notification-user {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 13px;
+            word-break: break-word;
+        }
+
+        .notification-date {
+            color: #64748b;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .type-badge,
+        .read-status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 7px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 9px;
+        }
+
+        .type-badge {
+            background: #172033;
+            color: #60a5fa;
+        }
+
+        .read-status {
+            margin-left: 5px;
+        }
+
+        .read {
+            background: #172033;
+            color: #64748b;
+        }
+
+        .unread {
+            background: #1e3a5f;
+            color: #60a5fa;
+        }
+
+        /* =========================
+           EMPTY
+        ========================= */
+
+        .empty-state {
+            background: #111827;
+            border: 1px dashed #334155;
+            border-radius: 14px;
+            padding: 70px 20px;
+            text-align: center;
+        }
+
+        .empty-state i {
+            font-size: 45px;
+            color: #475569;
+        }
+
+        .empty-state h4 {
+            color: #f8fafc;
+            margin-top: 15px;
+        }
+
+        .empty-state p {
+            color: #64748b;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 1000px) {
+
+            .sidebar {
+                width: 210px;
+            }
+
+            .main {
+                margin-left: 210px;
+                width: calc(100% - 210px);
+                padding: 25px;
+            }
+
+        }
+
+        @media (max-width: 768px) {
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                min-height: auto;
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+
+            .notification-header {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .notification-date {
+                white-space: normal;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- =========================
+     SIDEBAR
+========================= -->
+
+<div class="sidebar">
+
+    <div class="brand">
+        Campus <span>Loop</span>
+    </div>
+
+    <div class="sidebar-section">
+        Management
+    </div>
+
+    <a href="{% url 'admin_dashboard' %}">
+        <i class="bi bi-grid-1x2-fill"></i>
+        Dashboard
+    </a>
+
+    <a href="{% url 'admin_products' %}">
+        <i class="bi bi-box-seam-fill"></i>
+        Products
+    </a>
+
+    <a href="{% url 'admin_users' %}">
+        <i class="bi bi-people-fill"></i>
+        Users
+    </a>
+
+    <a href="{% url 'admin_orders' %}">
+        <i class="bi bi-cart-check-fill"></i>
+        Orders
+    </a>
+
+    <a href="{% url 'admin_payments' %}">
+        <i class="bi bi-credit-card-fill"></i>
+        Payments
+    </a>
+
+    <a href="{% url 'admin_revenue' %}">
+        <i class="bi bi-graph-up-arrow"></i>
+        Revenue
+    </a>
+
+    <a href="{% url 'admin_messages' %}">
+        <i class="bi bi-chat-left-text-fill"></i>
+        Messages
+    </a>
+
+    <a href="{% url 'admin_notifications' %}" class="active">
+        <i class="bi bi-bell-fill"></i>
+        Notifications
+    </a>
+
+    <a href="{% url 'create_campaign' %}">
+        <i class="bi bi-envelope-paper-fill"></i>
+        Email Campaigns
+    </a>
+
+    <hr>
+
+    <a href="{% url 'home' %}">
+        <i class="bi bi-house-fill"></i>
+        View Website
+    </a>
+
+    <a href="/admin/">
+        <i class="bi bi-database-fill-gear"></i>
+        Django Admin
+    </a>
+
+</div>
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<div class="main">
+
+    <!-- TOP BAR -->
+
+    <div class="topbar">
+
+        <div class="d-flex justify-content-between align-items-center">
+
+            <div>
+
+                <h1 class="page-title">
+                    Notifications
+                </h1>
+
+                <div class="page-subtitle">
+                    Monitor system activity and user notifications
+                </div>
+
+            </div>
+
+            <div class="notification-count">
+                <i class="bi bi-bell-fill me-1"></i>
+                {{ notifications_list|length }} Notifications
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         FILTER
+    ========================= -->
+
+    <div class="filter-card">
+
+        <form method="GET">
+
+            <div class="row g-3">
+
+                <div class="col-md-7">
+
+                    <label class="form-label">
+                        Search Notifications
+                    </label>
+
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ search }}"
+                        class="form-control"
+                        placeholder="Search user, title or notification..."
+                    >
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <label class="form-label">
+                        Notification Type
+                    </label>
+
+                    <select
+                        name="type"
+                        class="form-select"
+                    >
+
+                        <option value="">
+                            All Types
+                        </option>
+
+                        <option value="order"
+                            {% if selected_type == "order" %}selected{% endif %}>
+                            Order
+                        </option>
+
+                        <option value="payment"
+                            {% if selected_type == "payment" %}selected{% endif %}>
+                            Payment
+                        </option>
+
+                        <option value="message"
+                            {% if selected_type == "message" %}selected{% endif %}>
+                            Message
+                        </option>
+
+                        <option value="product"
+                            {% if selected_type == "product" %}selected{% endif %}>
+                            Product
+                        </option>
+
+                        <option value="system"
+                            {% if selected_type == "system" %}selected{% endif %}>
+                            System
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-2 d-flex align-items-end">
+
+                    <button
+                        type="submit"
+                        class="btn btn-filter w-100"
+                    >
+                        <i class="bi bi-funnel-fill me-1"></i>
+                        Filter
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- =========================
+         NOTIFICATIONS
+    ========================= -->
+
+    {% if notifications_list %}
+
+        {% for notification in notifications_list %}
+
+            <div class="notification-card">
+
+                <div class="notification-icon">
+
+                    {% if notification.notification_type == "order" %}
+
+                        <i class="bi bi-cart-check-fill"></i>
+
+                    {% elif notification.notification_type == "payment" %}
+
+                        <i class="bi bi-credit-card-fill"></i>
+
+                    {% elif notification.notification_type == "message" %}
+
+                        <i class="bi bi-chat-left-text-fill"></i>
+
+                    {% elif notification.notification_type == "product" %}
+
+                        <i class="bi bi-box-seam-fill"></i>
+
+                    {% else %}
+
+                        <i class="bi bi-gear-fill"></i>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="notification-body">
+
+                    <div class="notification-header">
+
+                        <div>
+
+                            <div class="notification-title">
+                                {{ notification.title }}
+                            </div>
+
+                            <span class="type-badge">
+                                {{ notification.get_notification_type_display }}
+                            </span>
+
+                            {% if notification.is_read %}
+
+                                <span class="read-status read">
+                                    Read
+                                </span>
+
+                            {% else %}
+
+                                <span class="read-status unread">
+                                    Unread
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="notification-date">
+
+                            {{ notification.created_at|date:"d M Y, h:i A" }}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="notification-message">
+
+                        {{ notification.message }}
+
+                    </div>
+
+
+                    <div class="notification-user">
+
+                        <i class="bi bi-person-fill me-1"></i>
+
+                        Recipient:
+
+                        {% if notification.user.first_name or notification.user.last_name %}
+
+                            {{ notification.user.first_name }}
+                            {{ notification.user.last_name }}
+
+                        {% else %}
+
+                            User
+
+                        {% endif %}
+
+                        &nbsp; | &nbsp;
+
+                        {{ notification.user.email }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <i class="bi bi-bell-slash"></i>
+
+            <h4>
+                No notifications found
+            </h4>
+
+            <p>
+                System and user notifications will appear here.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

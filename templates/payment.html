@@ -1,0 +1,332 @@
+{% extends "base.html" %}
+
+{% block title %}Payment | Campus Loop{% endblock %}
+
+{% block extra_css %}
+
+<style>
+    .payment-container {
+        max-width: 850px;
+        margin: 15px auto;
+    }
+
+    .payment-card {
+        background: #111827;
+        border: 1px solid #243047;
+        border-radius: 20px;
+        padding: 35px;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.22);
+    }
+
+    .payment-icon {
+        color: #60a5fa;
+        font-size: 3.2rem;
+    }
+
+    .payment-title {
+        color: #f8fafc;
+        font-weight: 800;
+    }
+
+    .order-id {
+        color: #94a3b8;
+    }
+
+    .amount {
+        color: #60a5fa;
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin-top: 10px;
+    }
+
+    .demo-alert {
+        background: #172033;
+        border: 1px solid #665522;
+        color: #cbd5e1;
+        border-radius: 12px;
+        padding: 15px;
+    }
+
+    .demo-alert i {
+        color: #fbbf24;
+    }
+
+    .section-title {
+        color: #f8fafc;
+        font-weight: 700;
+    }
+
+    .method {
+        background: #0f172a;
+        border: 1px solid #243047;
+        border-radius: 12px;
+        padding: 18px;
+        margin-bottom: 12px;
+        transition: all 0.2s ease;
+    }
+
+    .method:hover {
+        background: #172033;
+        border-color: #3b82f6;
+    }
+
+    .method .form-check-input {
+        background-color: #0f172a;
+        border-color: #475569;
+    }
+
+    .method .form-check-input:checked {
+        background-color: #2563eb;
+        border-color: #2563eb;
+    }
+
+    .method .form-check-label {
+        color: #e2e8f0;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .method strong {
+        color: #f8fafc;
+    }
+
+    .method strong i {
+        color: #60a5fa;
+    }
+
+    .method-description {
+        color: #64748b;
+    }
+
+    .pay-btn {
+        background: #2563eb;
+        border: 1px solid #2563eb;
+        color: white;
+        border-radius: 10px;
+        padding: 13px;
+        font-weight: 600;
+    }
+
+    .pay-btn:hover {
+        background: #1d4ed8;
+        border-color: #1d4ed8;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .security-note {
+        color: #64748b;
+    }
+
+    .security-note i {
+        color: #34d399;
+    }
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="payment-container">
+
+    <div class="payment-card">
+
+        <!-- Payment Header -->
+
+        <div class="text-center mb-4">
+
+            <i class="bi bi-credit-card payment-icon"></i>
+
+            <h2 class="payment-title mt-3">
+                Complete Payment
+            </h2>
+
+            <p class="order-id mb-1">
+                Order #{{ order.id }}
+            </p>
+
+            <div class="amount">
+                ₹{{ order.total_amount }}
+            </div>
+
+        </div>
+
+
+        <!-- Demo Notice -->
+
+        <div class="demo-alert mb-4">
+
+            <div class="d-flex">
+
+                <i class="bi bi-info-circle fs-5 me-3"></i>
+
+                <div>
+
+                    <strong class="text-light">
+                        Demo Payment
+                    </strong>
+
+                    <div class="small mt-1">
+                        This is a test/sandbox payment for the Campus Loop
+                        college project. No real money will be charged.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <h5 class="section-title mb-3">
+                Select Payment Method
+            </h5>
+
+
+            <!-- Test Card -->
+
+            <div class="method">
+
+                <div class="form-check">
+
+                    <input
+                        class="form-check-input"
+                        type="radio"
+                        name="payment_method"
+                        value="test_card"
+                        id="testCard"
+                        checked
+                    >
+
+                    <label
+                        class="form-check-label"
+                        for="testCard"
+                    >
+
+                        <strong>
+                            <i class="bi bi-credit-card me-2"></i>
+                            Test Card
+                        </strong>
+
+                        <div class="method-description small mt-1">
+                            Simulated card payment
+                        </div>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- UPI -->
+
+            <div class="method">
+
+                <div class="form-check">
+
+                    <input
+                        class="form-check-input"
+                        type="radio"
+                        name="payment_method"
+                        value="upi"
+                        id="upi"
+                    >
+
+                    <label
+                        class="form-check-label"
+                        for="upi"
+                    >
+
+                        <strong>
+                            <i class="bi bi-phone me-2"></i>
+                            UPI Test
+                        </strong>
+
+                        <div class="method-description small mt-1">
+                            Simulated UPI payment
+                        </div>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- Cash on Delivery -->
+
+            <div class="method">
+
+                <div class="form-check">
+
+                    <input
+                        class="form-check-input"
+                        type="radio"
+                        name="payment_method"
+                        value="cod"
+                        id="cod"
+                    >
+
+                    <label
+                        class="form-check-label"
+                        for="cod"
+                    >
+
+                        <strong>
+                            <i class="bi bi-box-seam me-2"></i>
+                            Cash on Delivery
+                        </strong>
+
+                        <div class="method-description small mt-1">
+                            Pay when the item is handed over
+                        </div>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- Pay Button -->
+
+            <button
+                type="submit"
+                class="btn pay-btn w-100 mt-3"
+            >
+
+                <i class="bi bi-lock me-1"></i>
+
+                Complete Test Payment
+
+            </button>
+
+        </form>
+
+
+        <!-- Security Note -->
+
+        <div class="text-center mt-4">
+
+            <small class="security-note">
+
+                <i class="bi bi-shield-check me-1"></i>
+
+                This project uses a simulated payment system.
+
+            </small>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,740 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Revenue | Campus Loop{% endblock %}
+
+{% block extra_css %}
+
+<style>
+    .revenue-page {
+        width: 100%;
+        padding: 35px 30px;
+    }
+
+    .revenue-layout {
+        display: flex;
+        width: 100%;
+        gap: 28px;
+        align-items: flex-start;
+    }
+
+    /* ================= SIDEBAR ================= */
+
+    .admin-sidebar {
+        width: 235px;
+        min-width: 235px;
+        background: #0f172a;
+        border: 1px solid #243047;
+        border-radius: 12px;
+        padding: 22px 16px;
+        position: sticky;
+        top: 20px;
+    }
+
+    .admin-brand {
+        font-size: 22px;
+        font-weight: 700;
+        color: #60a5fa;
+        margin-bottom: 25px;
+        padding: 0 8px;
+    }
+
+    .admin-section-title {
+        font-size: 11px;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin: 18px 8px 10px;
+    }
+
+    .admin-link {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        width: 100%;
+        padding: 11px 12px;
+        margin-bottom: 6px;
+        border-radius: 8px;
+        color: #94a3b8;
+        text-decoration: none;
+        font-size: 15px;
+        transition: 0.2s;
+    }
+
+    .admin-link:hover {
+        background: #172033;
+        color: #f8fafc;
+    }
+
+    .admin-link.active {
+        background: #2563eb;
+        color: white;
+    }
+
+    .admin-link i {
+        font-size: 17px;
+    }
+
+    .admin-divider {
+        border-color: #243047;
+        margin: 18px 0;
+    }
+
+    /* ================= MAIN ================= */
+
+    .revenue-main {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .page-header {
+        margin-bottom: 25px;
+    }
+
+    .page-label {
+        color: #3b82f6;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+    }
+
+    .page-header h1 {
+        color: #f8fafc;
+        font-size: 34px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .page-header p {
+        color: #64748b;
+        margin: 0;
+        font-size: 15px;
+    }
+
+    /* ================= STAT CARDS ================= */
+
+    .revenue-stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .revenue-stat {
+        background: #111827;
+        border: 1px solid #243047;
+        border-radius: 12px;
+        padding: 22px;
+        min-width: 0;
+    }
+
+    .revenue-stat-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .revenue-stat-title {
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .revenue-stat-value {
+        color: #f8fafc;
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .revenue-stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        background: #172033;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #60a5fa;
+        font-size: 22px;
+    }
+
+    /* ================= CONTENT CARD ================= */
+
+    .revenue-card {
+        background: #111827;
+        border: 1px solid #243047;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 25px;
+    }
+
+    .revenue-card-header {
+        padding: 20px 22px;
+        border-bottom: 1px solid #243047;
+    }
+
+    .revenue-card-header h4 {
+        color: #f8fafc;
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0 0 5px;
+    }
+
+    .revenue-card-header p {
+        color: #64748b;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    /* ================= TABLE ================= */
+
+    .revenue-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .revenue-table {
+        width: 100%;
+        min-width: 700px;
+        border-collapse: collapse;
+    }
+
+    .revenue-table th {
+        background: #0b1120;
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 14px 18px;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .revenue-table td {
+        color: #cbd5e1;
+        padding: 16px 18px;
+        border-top: 1px solid #243047;
+        font-size: 14px;
+        vertical-align: middle;
+    }
+
+    .revenue-table tbody tr:hover {
+        background: #172033;
+    }
+
+    .amount {
+        color: #f8fafc;
+        font-weight: 600;
+    }
+
+    .commission {
+        color: #60a5fa;
+        font-weight: 700;
+    }
+
+    .seller-name {
+        color: #f8fafc;
+        font-weight: 600;
+    }
+
+    .seller-email {
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .empty-state i {
+        font-size: 42px;
+        color: #334155;
+    }
+
+    .empty-state h5 {
+        color: #f8fafc;
+        margin-top: 15px;
+    }
+
+    .empty-state p {
+        color: #64748b;
+        margin-bottom: 0;
+    }
+
+    /* ================= PROMOTION ================= */
+
+    .promotion-badge {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 6px;
+        background: #172033;
+        color: #93c5fd;
+        font-size: 12px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 1000px) {
+        .revenue-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .admin-sidebar {
+            width: 205px;
+            min-width: 205px;
+        }
+
+        .revenue-page {
+            padding: 25px 20px;
+        }
+    }
+
+    @media (max-width: 750px) {
+        .revenue-layout {
+            flex-direction: column;
+        }
+
+        .admin-sidebar {
+            position: static;
+            width: 100%;
+            min-width: 100%;
+        }
+
+        .revenue-page {
+            padding: 20px 15px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+        }
+    }
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="revenue-page">
+
+    <div class="revenue-layout">
+
+        <!-- ================= ADMIN SIDEBAR ================= -->
+
+        <aside class="admin-sidebar">
+
+            <div class="admin-brand">
+                <i class="bi bi-shield-check me-2"></i>
+                Campus Loop
+            </div>
+
+            <div class="admin-section-title">
+                Management
+            </div>
+
+            <a href="{% url 'admin_dashboard' %}" class="admin-link">
+                <i class="bi bi-grid"></i>
+                Dashboard
+            </a>
+
+            <a href="{% url 'admin_products' %}" class="admin-link">
+                <i class="bi bi-box-seam"></i>
+                Products
+            </a>
+
+            <a href="{% url 'admin_users' %}" class="admin-link">
+                <i class="bi bi-people"></i>
+                Users
+            </a>
+
+            <a href="{% url 'admin_orders' %}" class="admin-link">
+                <i class="bi bi-cart3"></i>
+                Orders
+            </a>
+
+            <a href="{% url 'admin_payments' %}" class="admin-link">
+                <i class="bi bi-credit-card"></i>
+                Payments
+            </a>
+
+            <a href="{% url 'admin_notifications' %}" class="admin-link">
+                <i class="bi bi-bell"></i>
+                Notifications
+            </a>
+
+            <a href="{% url 'admin_messages' %}" class="admin-link">
+                <i class="bi bi-chat-dots"></i>
+                Messages
+            </a>
+
+            <a href="{% url 'create_campaign' %}" class="admin-link">
+                <i class="bi bi-envelope"></i>
+                Email Campaigns
+            </a>
+
+            <a href="{% url 'admin_revenue' %}" class="admin-link active">
+                <i class="bi bi-graph-up-arrow"></i>
+                Revenue
+            </a>
+
+            <hr class="admin-divider">
+
+            <div class="admin-section-title">
+                System
+            </div>
+
+            <a href="/admin/" class="admin-link">
+                <i class="bi bi-gear"></i>
+                Django Admin
+            </a>
+
+            <a href="/" class="admin-link">
+                <i class="bi bi-house"></i>
+                View Website
+            </a>
+
+        </aside>
+
+
+        <!-- ================= MAIN CONTENT ================= -->
+
+        <main class="revenue-main">
+
+            <!-- Header -->
+
+            <div class="page-header">
+
+                <div class="page-label">
+                    Finance & Analytics
+                </div>
+
+                <h1>
+                    Revenue
+                </h1>
+
+                <p>
+                    Track commissions and promotional revenue generated by Campus Loop.
+                </p>
+
+            </div>
+
+
+            <!-- ================= STATISTICS ================= -->
+
+            <div class="revenue-stats">
+
+                <div class="revenue-stat">
+
+                    <div class="revenue-stat-top">
+
+                        <div>
+                            <div class="revenue-stat-title">
+                                Total Revenue
+                            </div>
+
+                            <div class="revenue-stat-value">
+                                ₹{{ total_revenue }}
+                            </div>
+                        </div>
+
+                        <div class="revenue-stat-icon">
+                            ₹
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="revenue-stat">
+
+                    <div class="revenue-stat-top">
+
+                        <div>
+                            <div class="revenue-stat-title">
+                                Commission Revenue
+                            </div>
+
+                            <div class="revenue-stat-value">
+                                ₹{{ total_commission }}
+                            </div>
+                        </div>
+
+                        <div class="revenue-stat-icon">
+                            <i class="bi bi-percent"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="revenue-stat">
+
+                    <div class="revenue-stat-top">
+
+                        <div>
+                            <div class="revenue-stat-title">
+                                Promotion Revenue
+                            </div>
+
+                            <div class="revenue-stat-value">
+                                ₹{{ total_promotions }}
+                            </div>
+                        </div>
+
+                        <div class="revenue-stat-icon">
+                            <i class="bi bi-megaphone"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= COMMISSIONS ================= -->
+
+            <div class="revenue-card">
+
+                <div class="revenue-card-header">
+
+                    <h4>
+                        <i class="bi bi-percent me-2"></i>
+                        Commission Transactions
+                    </h4>
+
+                    <p>
+                        5% marketplace commission
+                    </p>
+
+                </div>
+
+
+                <div class="revenue-table-wrapper">
+
+                    <table class="revenue-table">
+
+                        <thead>
+
+                            <tr>
+                                <th>Order</th>
+                                <th>Seller</th>
+                                <th>Order Amount</th>
+                                <th>Rate</th>
+                                <th>Commission</th>
+                                <th>Date</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for commission in recent_commissions %}
+
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        #{{ commission.order.id }}
+                                    </strong>
+                                </td>
+
+                                <td>
+
+                                    <div class="seller-name">
+                                        {{ commission.seller.first_name }}
+                                        {{ commission.seller.last_name }}
+                                    </div>
+
+                                    <div class="seller-email">
+                                        {{ commission.seller.email }}
+                                    </div>
+
+                                </td>
+
+                                <td class="amount">
+                                    ₹{{ commission.order_amount }}
+                                </td>
+
+                                <td>
+                                    {{ commission.commission_rate }}%
+                                </td>
+
+                                <td class="commission">
+                                    ₹{{ commission.commission_amount }}
+                                </td>
+
+                                <td>
+                                    {{ commission.created_at|date:"d M Y" }}
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td colspan="6">
+
+                                    <div class="empty-state">
+
+                                        <i class="bi bi-percent"></i>
+
+                                        <h5>
+                                            No Commission Transactions
+                                        </h5>
+
+                                        <p>
+                                            Commission records will appear here after successful paid orders.
+                                        </p>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= PROMOTIONS ================= -->
+
+            <div class="revenue-card">
+
+                <div class="revenue-card-header">
+
+                    <h4>
+                        <i class="bi bi-megaphone me-2"></i>
+                        Promotion Revenue
+                    </h4>
+
+                    <p>
+                        Revenue generated from product promotions.
+                    </p>
+
+                </div>
+
+
+                <div class="revenue-table-wrapper">
+
+                    <table class="revenue-table">
+
+                        <thead>
+
+                            <tr>
+                                <th>Seller</th>
+                                <th>Product</th>
+                                <th>Promotion</th>
+                                <th>Amount</th>
+                                <th>Start</th>
+                                <th>End</th>
+                                <th>Status</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for promotion in recent_promotions %}
+
+                            <tr>
+
+                                <td>
+
+                                    <div class="seller-name">
+                                        {{ promotion.seller.first_name }}
+                                        {{ promotion.seller.last_name }}
+                                    </div>
+
+                                    <div class="seller-email">
+                                        {{ promotion.seller.email }}
+                                    </div>
+
+                                </td>
+
+                                <td>
+                                    {% if promotion.product %}
+                                        {{ promotion.product.name }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <span class="promotion-badge">
+                                        {{ promotion.get_promotion_type_display }}
+                                    </span>
+                                </td>
+
+                                <td class="commission">
+                                    ₹{{ promotion.amount }}
+                                </td>
+
+                                <td>
+                                    {{ promotion.start_date|date:"d M Y" }}
+                                </td>
+
+                                <td>
+                                    {{ promotion.end_date|date:"d M Y" }}
+                                </td>
+
+                                <td>
+                                    {{ promotion.get_status_display }}
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td colspan="7">
+
+                                    <div class="empty-state">
+
+                                        <i class="bi bi-megaphone"></i>
+
+                                        <h5>
+                                            No Promotion Revenue
+                                        </h5>
+
+                                        <p>
+                                            Promotion records will appear here when sellers promote products.
+                                        </p>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</div>
+
+{% endblock %}

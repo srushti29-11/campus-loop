@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Send Message | Campus Loop{% endblock %}
+
+{% block content %}
+
+<div class="container py-5" style="max-width: 850px;">
+
+    <!-- Back Button -->
+    <div class="mb-4">
+        <a href="{% url 'messages' %}" class="btn btn-outline-light btn-sm">
+            <i class="bi bi-arrow-left me-2"></i>
+            Back to Messages
+        </a>
+    </div>
+
+    <!-- Message Card -->
+    <div class="card border-0 shadow-lg"
+         style="background:#111827; border-radius:18px;">
+
+        <!-- Header -->
+        <div class="card-header border-0 p-4"
+             style="background:#172033; border-radius:18px 18px 0 0;">
+
+            <div class="d-flex align-items-center">
+
+                <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
+                     style="width:50px;height:50px;background:#2563eb;">
+
+                    <i class="bi bi-person-fill text-white fs-4"></i>
+
+                </div>
+
+                <div>
+                    <div class="text-secondary small">
+                        Send message to
+                    </div>
+
+                    <h4 class="text-white mb-1">
+                        {% if receiver.first_name %}
+                            {{ receiver.first_name }} {{ receiver.last_name }}
+                        {% else %}
+                            {{ receiver.email }}
+                        {% endif %}
+                    </h4>
+
+                    <div class="text-secondary small">
+                        {{ receiver.email }}
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Body -->
+        <div class="card-body p-4">
+
+            {% if product %}
+
+            <div class="p-3 mb-4 rounded-3"
+                 style="background:#172033; border:1px solid #243047;">
+
+                <div class="d-flex align-items-center">
+
+                    <div class="me-3">
+                        <i class="bi bi-box-seam text-primary fs-3"></i>
+                    </div>
+
+                    <div>
+                        <div class="text-secondary small">
+                            Regarding this item
+                        </div>
+
+                        <div class="text-white fw-semibold">
+                            {{ product.name }}
+                        </div>
+
+                        <div class="text-secondary small">
+                            You are contacting the seller about this product.
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+            <!-- Message Form -->
+            <form method="post">
+
+                {% csrf_token %}
+
+                <div class="mb-4">
+
+                    <label for="message"
+                           class="form-label text-white fw-semibold">
+                        Your Message
+                    </label>
+
+                    <textarea
+                        id="message"
+                        name="message"
+                        class="form-control"
+                        rows="7"
+                        placeholder="Write your message here..."
+                        required
+                        style="
+                            background:#0b1120;
+                            border:1px solid #243047;
+                            color:#f8fafc;
+                            border-radius:12px;
+                        "></textarea>
+
+                    <div class="form-text text-secondary">
+                        Be clear and polite when contacting another student.
+                    </div>
+
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <a href="{% url 'messages' %}"
+                       class="btn btn-outline-light">
+                        Cancel
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary px-4">
+                        <i class="bi bi-send-fill me-2"></i>
+                        Send Message
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

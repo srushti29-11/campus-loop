@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+
+{% block title %}Seller Orders - Campus Loop{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="mb-4">
+        <span class="badge bg-primary mb-2">
+            <i class="bi bi-box-seam me-1"></i>
+            Seller Management
+        </span>
+
+        <h1 class="text-white fw-bold mb-2">
+            Orders for My Products
+        </h1>
+
+        <p class="text-secondary">
+            View and manage orders placed for the products you have listed.
+        </p>
+    </div>
+
+    {% if orders %}
+
+        {% for order in orders %}
+
+        <div class="card border-0 shadow-sm mb-4"
+             style="background:#111827; border:1px solid #243047 !important;">
+
+            <div class="card-body p-4">
+
+                <!-- Order Header -->
+                <div class="d-flex justify-content-between
+                            align-items-start flex-wrap gap-3 mb-4">
+
+                    <div>
+                        <h5 class="text-white fw-bold mb-1">
+                            Order #{{ order.id }}
+                        </h5>
+
+                        <small class="text-secondary">
+                            Placed on {{ order.created_at|date:"d M Y, h:i A" }}
+                        </small>
+                    </div>
+
+                    {% if order.status == "confirmed" %}
+                        <span class="badge bg-success">
+                            Confirmed
+                        </span>
+                    {% elif order.status == "processing" %}
+                        <span class="badge bg-info">
+                            Processing
+                        </span>
+                    {% elif order.status == "completed" %}
+                        <span class="badge bg-primary">
+                            Completed
+                        </span>
+                    {% elif order.status == "cancelled" %}
+                        <span class="badge bg-danger">
+                            Cancelled
+                        </span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">
+                            Pending
+                        </span>
+                    {% endif %}
+
+                </div>
+
+                <!-- Buyer Information -->
+                <div class="p-3 rounded mb-4"
+                     style="background:#172033;">
+
+                    <h6 class="text-white fw-bold mb-2">
+                        <i class="bi bi-person me-2 text-primary"></i>
+                        Buyer Information
+                    </h6>
+
+                    <p class="text-secondary mb-1">
+                        <strong class="text-white">Name:</strong>
+                        {{ order.buyer.first_name }}
+                        {{ order.buyer.last_name }}
+                    </p>
+
+                    <p class="text-secondary mb-0">
+                        <strong class="text-white">College:</strong>
+                        {{ order.buyer.college|default:"Not provided" }}
+                    </p>
+
+                </div>
+
+                <!-- Products -->
+                <h6 class="text-white fw-bold mb-3">
+                    Products in this Order
+                </h6>
+
+                {% for item in order.items.all %}
+
+                    {% if item.product.seller == request.user %}
+
+                    <div class="d-flex justify-content-between
+                                align-items-center
+                                border-bottom py-3"
+                         style="border-color:#243047 !important;">
+
+                        <div>
+                            <h6 class="text-white mb-1">
+                                {{ item.product.name }}
+                            </h6>
+
+                            <small class="text-secondary">
+                                Quantity: {{ item.quantity }}
+                            </small>
+                        </div>
+
+                        <div class="text-end">
+
+                            {% if item.price == 0 %}
+
+                                <span class="text-success fw-bold">
+                                    FREE
+                                </span>
+
+                            {% else %}
+
+                                <span class="text-white fw-bold">
+                                    ₹{{ item.price }}
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                    {% endif %}
+
+                {% endfor %}
+
+                <!-- Order Information -->
+                <div class="row g-3 mt-3">
+
+                    <div class="col-md-6">
+
+                        <div class="p-3 rounded"
+                             style="background:#172033;">
+
+                            <small class="text-secondary">
+                                Order Total
+                            </small>
+
+                            {% if order.total_amount == 0 %}
+
+                                <h5 class="text-success mb-0 mt-1">
+                                    FREE
+                                </h5>
+
+                            {% else %}
+
+                                <h5 class="text-white mb-0 mt-1">
+                                    ₹{{ order.total_amount }}
+                                </h5>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="p-3 rounded"
+                             style="background:#172033;">
+
+                            <small class="text-secondary">
+                                Handover / Delivery
+                            </small>
+
+                            <p class="text-white mb-0 mt-1">
+                                {{ order.delivery_address|default:"Not provided" }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                
+                <!-- Actions -->
+<div class="mt-4">
+
+    <form method="POST"
+          action="{% url 'update_seller_order_status' order.id %}"
+          class="d-flex flex-wrap gap-2 align-items-center">
+
+        {% csrf_token %}
+
+        <select name="status"
+                class="form-select"
+                style="max-width:220px;
+                       background:#0f172a;
+                       color:#fff;
+                       border:1px solid #334155;">
+
+            <option value="pending"
+                {% if order.status == "pending" %}selected{% endif %}>
+                Pending
+            </option>
+
+            <option value="confirmed"
+                {% if order.status == "confirmed" %}selected{% endif %}>
+                Confirmed
+            </option>
+
+            <option value="processing"
+                {% if order.status == "processing" %}selected{% endif %}>
+                Processing
+            </option>
+
+            <option value="completed"
+                {% if order.status == "completed" %}selected{% endif %}>
+                Completed
+            </option>
+
+            <option value="cancelled"
+                {% if order.status == "cancelled" %}selected{% endif %}>
+                Cancelled
+            </option>
+
+        </select>
+
+        <button type="submit"
+                class="btn btn-primary">
+
+            <i class="bi bi-arrow-repeat me-2"></i>
+            Update Status
+
+        </button>
+
+        <a href="{% url 'messages' %}"
+           class="btn btn-outline-light">
+
+            <i class="bi bi-chat-dots me-2"></i>
+            Messages
+
+        </a>
+
+    </form>
+
+</div>
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="text-center py-5">
+
+            <div class="mb-3">
+                <i class="bi bi-inbox text-secondary"
+                   style="font-size:4rem;"></i>
+            </div>
+
+            <h4 class="text-white">
+                No orders yet
+            </h4>
+
+            <p class="text-secondary">
+                Orders placed for your products will appear here.
+            </p>
+
+            <a href="{% url 'add_product' %}"
+               class="btn btn-primary mt-2">
+
+                <i class="bi bi-plus-circle me-2"></i>
+                List a Product
+
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications | Campus Loop{% endblock %}
+
+{% block content %}
+
+<style>
+    .notifications-page {
+        color: #f8fafc;
+    }
+
+    .notifications-page .page-title {
+        color: #f8fafc !important;
+        font-size: 32px;
+        font-weight: 700;
+    }
+
+    .notifications-page .page-subtitle {
+        color: #94a3b8 !important;
+    }
+
+    .notification-card {
+        background: #111827 !important;
+        border: 1px solid #243047 !important;
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 16px;
+        transition: 0.2s ease;
+    }
+
+    .notification-card:hover {
+        border-color: #3b82f6 !important;
+        transform: translateY(-1px);
+    }
+
+    .notification-card.unread {
+        border-left: 4px solid #3b82f6 !important;
+    }
+
+    .notification-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: #172033 !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .notification-icon i {
+        color: #60a5fa !important;
+        font-size: 22px;
+    }
+
+    .notification-title {
+        color: #f8fafc !important;
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .notification-message {
+        color: #cbd5e1 !important;
+        font-size: 15px;
+        line-height: 1.6;
+        margin-bottom: 8px;
+    }
+
+    .notification-date {
+        color: #64748b !important;
+        font-size: 13px;
+    }
+
+    .new-badge {
+        background: #2563eb !important;
+        color: #ffffff !important;
+        font-size: 12px;
+        padding: 4px 9px;
+        border-radius: 6px;
+    }
+
+    .read-btn {
+        border: 1px solid #3b82f6 !important;
+        color: #60a5fa !important;
+        background: transparent !important;
+        border-radius: 8px;
+        padding: 7px 13px;
+        text-decoration: none;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    .read-btn:hover {
+        background: #2563eb !important;
+        color: #ffffff !important;
+    }
+
+    .empty-state {
+        background: #111827 !important;
+        border: 1px solid #243047 !important;
+        border-radius: 14px;
+        text-align: center;
+        padding: 70px 20px;
+    }
+
+    .empty-state i {
+        color: #64748b !important;
+        font-size: 55px;
+    }
+
+    .empty-state h4 {
+        color: #f8fafc !important;
+        margin-top: 18px;
+    }
+
+    .empty-state p {
+        color: #94a3b8 !important;
+    }
+
+    .dashboard-btn {
+        border: 1px solid #3b82f6;
+        color: #60a5fa;
+        border-radius: 9px;
+        padding: 9px 16px;
+        text-decoration: none;
+    }
+
+    .dashboard-btn:hover {
+        background: #2563eb;
+        color: white;
+    }
+</style>
+
+
+<div class="container py-5 notifications-page">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1 class="page-title mb-1">
+                <i class="bi bi-bell-fill me-2"
+                   style="color:#60a5fa !important;"></i>
+                Notifications
+            </h1>
+
+            <p class="page-subtitle mb-0">
+                Stay updated with your Campus Loop activity.
+            </p>
+        </div>
+
+        <a href="{% url 'dashboard' %}" class="dashboard-btn">
+            <i class="bi bi-arrow-left me-1"></i>
+            Dashboard
+        </a>
+
+    </div>
+
+
+    {% if notifications %}
+
+        {% for notification in notifications %}
+
+            <div class="notification-card {% if not notification.is_read %}unread{% endif %}">
+
+                <div class="d-flex align-items-start gap-3">
+
+                    <!-- Icon -->
+                    <div class="notification-icon">
+
+                        {% if notification.notification_type == "order" %}
+                            <i class="bi bi-box-seam"></i>
+
+                        {% elif notification.notification_type == "payment" %}
+                            <i class="bi bi-credit-card"></i>
+
+                        {% elif notification.notification_type == "message" %}
+                            <i class="bi bi-chat-dots"></i>
+
+                        {% elif notification.notification_type == "product" %}
+                            <i class="bi bi-box"></i>
+
+                        {% else %}
+                            <i class="bi bi-info-circle"></i>
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Content -->
+                    <div class="flex-grow-1">
+
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+
+                            <div class="notification-title">
+                                {{ notification.title }}
+                            </div>
+
+                            {% if not notification.is_read %}
+                                <span class="new-badge">
+                                    New
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+                        <div class="notification-message">
+                            {{ notification.message }}
+                        </div>
+
+                        <div class="notification-date">
+                            <i class="bi bi-clock me-1"></i>
+                            {{ notification.created_at|date:"d M Y, h:i A" }}
+                        </div>
+
+                    </div>
+
+
+                    <!-- Mark as read -->
+                    {% if not notification.is_read %}
+
+                        <div>
+                            <a href="{% url 'mark_notification_read' notification.id %}"
+                               class="read-btn">
+                                Mark as Read
+                            </a>
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <i class="bi bi-bell-slash"></i>
+
+            <h4>No Notifications</h4>
+
+            <p>
+                You don't have any notifications right now.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

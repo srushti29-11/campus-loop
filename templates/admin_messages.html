@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Messages | Campus Loop Admin</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #0b1120;
+            color: #f8fafc;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #0f172a;
+            border-right: 1px solid #243047;
+            padding: 25px 15px;
+            overflow-y: auto;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 12px 25px;
+            color: #60a5fa;
+            font-size: 1.35rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #2563eb;
+            color: white;
+            border-radius: 11px;
+        }
+
+        .sidebar-title {
+            color: #64748b;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 13px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 13px;
+            margin-bottom: 5px;
+            border-radius: 10px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.92rem;
+            transition: 0.2s ease;
+        }
+
+        .sidebar a i {
+            font-size: 1.05rem;
+            width: 20px;
+        }
+
+        .sidebar a:hover {
+            background: #172033;
+            color: #60a5fa;
+        }
+
+        .sidebar a.active {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+        }
+
+        .sidebar-bottom {
+            margin-top: 25px;
+            border-top: 1px solid #243047;
+            padding-top: 15px;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main {
+            margin-left: 250px;
+            min-height: 100vh;
+            padding: 32px;
+        }
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 1.9rem;
+            font-weight: 750;
+            margin: 0;
+        }
+
+        .page-subtitle {
+            color: #94a3b8;
+            margin-top: 5px;
+            font-size: 0.92rem;
+        }
+
+        .view-site {
+            color: #cbd5e1;
+            border: 1px solid #334155;
+            background: #111827;
+            padding: 9px 15px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-size: 0.88rem;
+        }
+
+        .view-site:hover {
+            color: #60a5fa;
+            border-color: #3b82f6;
+        }
+
+        /* ================= STAT CARDS ================= */
+
+        .stat-card {
+            background: #111827;
+            border: 1px solid #243047;
+            border-radius: 15px;
+            padding: 20px;
+            height: 100%;
+        }
+
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #172033;
+            color: #60a5fa;
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+        }
+
+        .stat-number {
+            font-size: 1.65rem;
+            font-weight: 750;
+            color: #f8fafc;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-top: 3px;
+        }
+
+        /* ================= SEARCH ================= */
+
+        .search-box {
+            background: #111827;
+            border: 1px solid #243047;
+            border-radius: 15px;
+            padding: 18px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        .search-box .form-control {
+            background: #0b1120;
+            color: #f8fafc;
+            border: 1px solid #334155;
+            border-radius: 9px;
+        }
+
+        .search-box .form-control:focus {
+            background: #0b1120;
+            color: #f8fafc;
+            border-color: #3b82f6;
+            box-shadow: none;
+        }
+
+        .search-box .form-control::placeholder {
+            color: #64748b;
+        }
+
+        .btn-search {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            padding: 9px 18px;
+            font-weight: 600;
+        }
+
+        .btn-search:hover {
+            background: #1d4ed8;
+            color: white;
+        }
+
+        /* ================= MESSAGE CARDS ================= */
+
+        .messages-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message-card {
+            background: #111827;
+            border: 1px solid #243047;
+            border-radius: 15px;
+            padding: 20px;
+            transition: 0.2s ease;
+        }
+
+        .message-card:hover {
+            border-color: #334155;
+        }
+
+        .message-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .people {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .person-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .person-name {
+            color: #f8fafc;
+            font-weight: 650;
+        }
+
+        .person-email {
+            color: #64748b;
+            font-size: 0.76rem;
+        }
+
+        .arrow-icon {
+            color: #475569;
+            font-size: 0.9rem;
+        }
+
+        .message-date {
+            color: #64748b;
+            font-size: 0.78rem;
+            white-space: nowrap;
+        }
+
+        .message-content {
+            background: #0b1120;
+            border: 1px solid #243047;
+            border-radius: 10px;
+            padding: 15px;
+            color: #e2e8f0 !important;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .product-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 12px;
+            background: #172033;
+            color: #60a5fa;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 0.76rem;
+        }
+
+        .empty-state {
+            background: #111827;
+            border: 1px solid #243047;
+            border-radius: 15px;
+            text-align: center;
+            padding: 65px 20px;
+        }
+
+        .empty-icon {
+            width: 65px;
+            height: 65px;
+            margin: auto;
+            border-radius: 18px;
+            background: #172033;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.7rem;
+            margin-bottom: 15px;
+        }
+
+        .empty-state h5 {
+            color: #f8fafc;
+        }
+
+        .empty-state p {
+            color: #64748b;
+            margin-bottom: 0;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 210px;
+            }
+
+            .main {
+                margin-left: 210px;
+                padding: 22px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid #243047;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .top-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .message-top {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar">
+
+    <a href="{% url 'admin_dashboard' %}" class="brand">
+        <span class="brand-icon">
+            <i class="bi bi-arrow-repeat"></i>
+        </span>
+        Campus Loop
+    </a>
+
+    <div class="sidebar-title">
+        Management
+    </div>
+
+    <a href="{% url 'admin_dashboard' %}">
+        <i class="bi bi-grid-1x2"></i>
+        Dashboard
+    </a>
+
+    <a href="{% url 'admin_products' %}">
+        <i class="bi bi-box-seam"></i>
+        Products
+    </a>
+
+    <a href="{% url 'admin_users' %}">
+        <i class="bi bi-people"></i>
+        Users
+    </a>
+
+    <a href="{% url 'admin_orders' %}">
+        <i class="bi bi-cart-check"></i>
+        Orders
+    </a>
+
+    <a href="{% url 'admin_payments' %}">
+        <i class="bi bi-credit-card"></i>
+        Payments
+    </a>
+
+    <a href="{% url 'admin_messages' %}" class="active">
+        <i class="bi bi-chat-dots"></i>
+        Messages
+    </a>
+
+    <a href="{% url 'admin_notifications' %}">
+        <i class="bi bi-bell"></i>
+        Notifications
+    </a>
+
+    <div class="sidebar-title">
+        Business
+    </div>
+
+    <a href="{% url 'create_campaign' %}">
+        <i class="bi bi-envelope-paper"></i>
+        Email Campaigns
+    </a>
+
+    <a href="{% url 'admin_revenue' %}">
+        <i class="bi bi-graph-up-arrow"></i>
+        Revenue
+    </a>
+
+    <div class="sidebar-bottom">
+
+        <a href="/admin/">
+            <i class="bi bi-gear"></i>
+            Django Admin
+        </a>
+
+        <a href="/">
+            <i class="bi bi-globe2"></i>
+            View Website
+        </a>
+
+    </div>
+
+</aside>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="main">
+
+    <div class="top-header">
+
+        <div>
+            <h1 class="page-title">
+                Messages
+            </h1>
+
+            <div class="page-subtitle">
+                Monitor communication between Campus Loop users.
+            </div>
+        </div>
+
+        <a href="/" class="view-site">
+            <i class="bi bi-box-arrow-up-right me-1"></i>
+            View Website
+        </a>
+
+    </div>
+
+
+    <!-- ================= STATISTICS ================= -->
+
+    <div class="row g-3">
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    <i class="bi bi-chat-dots"></i>
+                </div>
+
+                <div class="stat-number">
+                    {{ messages_list|length }}
+                </div>
+
+                <div class="stat-label">
+                    Total Messages
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    <i class="bi bi-send"></i>
+                </div>
+
+                <div class="stat-number">
+                    {{ messages_list|length }}
+                </div>
+
+                <div class="stat-label">
+                    Messages Shown
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    <i class="bi bi-people"></i>
+                </div>
+
+                <div class="stat-number">
+                    User
+                </div>
+
+                <div class="stat-label">
+                    Communication System
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+
+                <div class="stat-number">
+                    Admin
+                </div>
+
+                <div class="stat-label">
+                    Message Monitoring
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= SEARCH ================= -->
+
+    <div class="search-box">
+
+        <form method="get">
+
+            <div class="row g-2">
+
+                <div class="col-md-10">
+
+                    <input
+                        type="text"
+                        name="search"
+                        class="form-control"
+                        placeholder="Search sender, receiver, email or message..."
+                        value="{{ search }}"
+                    >
+
+                </div>
+
+                <div class="col-md-2">
+
+                    <button
+                        type="submit"
+                        class="btn-search w-100"
+                    >
+                        <i class="bi bi-search me-1"></i>
+                        Search
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- ================= MESSAGES ================= -->
+
+    {% if messages_list %}
+
+    <div class="messages-list">
+
+        {% for message in messages_list %}
+
+        <div class="message-card">
+
+            <div class="message-top">
+
+                <div class="people">
+
+                    <!-- Sender -->
+
+                    <div class="person-avatar">
+
+                        {% if message.sender.first_name %}
+                            {{ message.sender.first_name|first|upper }}
+                        {% else %}
+                            {{ message.sender.email|first|upper }}
+                        {% endif %}
+
+                    </div>
+
+                    <div>
+
+                        <div class="person-name">
+
+                            {% if message.sender.first_name or message.sender.last_name %}
+                                {{ message.sender.first_name }}
+                                {{ message.sender.last_name }}
+                            {% else %}
+                                User
+                            {% endif %}
+
+                        </div>
+
+                        <div class="person-email">
+                            {{ message.sender.email }}
+                        </div>
+
+                    </div>
+
+
+                    <i class="bi bi-arrow-right arrow-icon"></i>
+
+
+                    <!-- Receiver -->
+
+                    <div class="person-avatar">
+
+                        {% if message.receiver.first_name %}
+                            {{ message.receiver.first_name|first|upper }}
+                        {% else %}
+                            {{ message.receiver.email|first|upper }}
+                        {% endif %}
+
+                    </div>
+
+                    <div>
+
+                        <div class="person-name">
+
+                            {% if message.receiver.first_name or message.receiver.last_name %}
+                                {{ message.receiver.first_name }}
+                                {{ message.receiver.last_name }}
+                            {% else %}
+                                User
+                            {% endif %}
+
+                        </div>
+
+                        <div class="person-email">
+                            {{ message.receiver.email }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="message-date">
+
+                    <i class="bi bi-clock me-1"></i>
+
+                    {{ message.created_at|date:"d M Y, h:i A" }}
+
+                </div>
+
+            </div>
+
+
+            <!-- Message -->
+
+            <div class="message-content">
+                {{ message.message }}
+            </div>
+
+
+            <!-- Product -->
+
+            {% if message.product %}
+
+            <div class="product-tag">
+
+                <i class="bi bi-box-seam"></i>
+
+                Product:
+                {{ message.product.name }}
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-state">
+
+        <div class="empty-icon">
+            <i class="bi bi-chat-square-text"></i>
+        </div>
+
+        <h5>
+            No messages found
+        </h5>
+
+        <p>
+            User messages will appear here when communication takes place.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</main>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+</body>
+</html>

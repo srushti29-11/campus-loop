@@ -1,0 +1,462 @@
+{% extends "base.html" %}
+
+{% block title %}Email Campaigns | Campus Loop{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: #080d18;
+    }
+
+    .admin-wrapper {
+        min-height: calc(100vh - 70px);
+        display: flex;
+    }
+
+    .admin-sidebar {
+        width: 245px;
+        background: #0d1422;
+        border-right: 1px solid #202b3d;
+        padding: 28px 18px;
+    }
+
+    .admin-brand {
+        font-size: 20px;
+        font-weight: 700;
+        color: #60a5fa;
+        margin-bottom: 30px;
+    }
+
+    .sidebar-title {
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin: 22px 10px 10px;
+    }
+
+    .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 11px 13px;
+        margin-bottom: 5px;
+        border-radius: 9px;
+        color: #94a3b8;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .sidebar-link:hover,
+    .sidebar-link.active {
+        background: #172033;
+        color: #60a5fa;
+    }
+
+    .admin-content {
+        flex: 1;
+        padding: 35px;
+        overflow-x: auto;
+    }
+
+    .page-title {
+        color: #f8fafc;
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .page-subtitle {
+        color: #64748b;
+        margin-top: 6px;
+        margin-bottom: 30px;
+    }
+
+    .campaign-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.8fr);
+        gap: 24px;
+    }
+
+    .panel {
+        background: #111827;
+        border: 1px solid #202b3d;
+        border-radius: 16px;
+        padding: 25px;
+    }
+
+    .panel-title {
+        color: #f8fafc;
+        font-size: 18px;
+        font-weight: 650;
+        margin-bottom: 5px;
+    }
+
+    .panel-subtitle {
+        color: #64748b;
+        font-size: 13px;
+        margin-bottom: 22px;
+    }
+
+    .form-label {
+        color: #cbd5e1;
+        font-weight: 600;
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .form-control,
+    .form-select {
+        background: #0b1120 !important;
+        border: 1px solid #2a3850 !important;
+        color: #f8fafc !important;
+        border-radius: 9px;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: none !important;
+    }
+
+    .form-control::placeholder {
+        color: #64748b;
+    }
+
+    .form-select option {
+        background: #0b1120;
+        color: #f8fafc;
+    }
+
+    textarea.form-control {
+        min-height: 220px;
+        resize: vertical;
+    }
+
+    .send-btn {
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 9px;
+        padding: 11px 22px;
+        font-weight: 600;
+    }
+
+    .send-btn:hover {
+        background: #3b82f6;
+        color: white;
+    }
+
+    .info-card {
+        background: #0b1120;
+        border: 1px solid #243047;
+        border-radius: 12px;
+        padding: 18px;
+        margin-bottom: 14px;
+    }
+
+    .info-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        background: #172033;
+        color: #60a5fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 19px;
+        margin-bottom: 13px;
+    }
+
+    .info-title {
+        color: #f8fafc;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .info-text {
+        color: #64748b;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .warning-box {
+        background: #172033;
+        border: 1px solid #243047;
+        border-radius: 11px;
+        padding: 14px;
+        color: #94a3b8;
+        font-size: 12px;
+        line-height: 1.5;
+        margin-top: 18px;
+    }
+
+    .warning-box i {
+        color: #60a5fa;
+        margin-right: 6px;
+    }
+
+    @media (max-width: 950px) {
+        .campaign-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .admin-sidebar {
+            width: 200px;
+        }
+
+        .admin-content {
+            padding: 22px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="admin-wrapper">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+
+        <div class="admin-brand">
+            <i class="bi bi-shield-lock-fill"></i>
+            Campus Loop Admin
+        </div>
+
+        <div class="sidebar-title">Management</div>
+
+        <a href="{% url 'admin_dashboard' %}" class="sidebar-link">
+            <i class="bi bi-grid-1x2-fill"></i>
+            Dashboard
+        </a>
+
+        <a href="{% url 'admin_products' %}" class="sidebar-link">
+            <i class="bi bi-box-seam-fill"></i>
+            Products
+        </a>
+
+        <a href="{% url 'admin_users' %}" class="sidebar-link">
+            <i class="bi bi-people-fill"></i>
+            Users
+        </a>
+
+        <a href="{% url 'admin_orders' %}" class="sidebar-link">
+            <i class="bi bi-cart-check-fill"></i>
+            Orders
+        </a>
+
+        <a href="{% url 'admin_payments' %}" class="sidebar-link">
+            <i class="bi bi-credit-card-fill"></i>
+            Payments
+        </a>
+
+        <a href="{% url 'admin_revenue' %}" class="sidebar-link">
+            <i class="bi bi-graph-up-arrow"></i>
+            Revenue
+        </a>
+
+        <a href="{% url 'admin_messages' %}" class="sidebar-link">
+            <i class="bi bi-chat-left-text-fill"></i>
+            Messages
+        </a>
+
+        <a href="{% url 'admin_notifications' %}" class="sidebar-link">
+            <i class="bi bi-bell-fill"></i>
+            Notifications
+        </a>
+
+        <a href="{% url 'create_campaign' %}" class="sidebar-link active">
+            <i class="bi bi-envelope-paper-fill"></i>
+            Email Campaigns
+        </a>
+
+        <div class="sidebar-title">System</div>
+
+        <a href="{% url 'home' %}" class="sidebar-link">
+            <i class="bi bi-globe2"></i>
+            View Website
+        </a>
+
+        <a href="/admin/" class="sidebar-link">
+            <i class="bi bi-database-fill-gear"></i>
+            Django Admin
+        </a>
+
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="admin-content">
+
+        <h1 class="page-title">
+            Email Campaigns
+        </h1>
+
+        <div class="page-subtitle">
+            Send announcements and updates to Campus Loop users
+        </div>
+
+        <div class="campaign-layout">
+
+            <!-- CREATE CAMPAIGN -->
+            <div class="panel">
+
+                <div class="panel-title">
+                    <i class="bi bi-send-fill"></i>
+                    Create Email Campaign
+                </div>
+
+                <div class="panel-subtitle">
+                    Compose a message and select the users who should receive it.
+                </div>
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+                    <div class="mb-4">
+
+                        <label class="form-label">
+                            Email Subject
+                        </label>
+
+                        <input
+                            type="text"
+                            name="subject"
+                            class="form-control"
+                            placeholder="Enter email subject"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="mb-4">
+
+                        <label class="form-label">
+                            Audience
+                        </label>
+
+                        <select
+                            name="audience"
+                            class="form-select"
+                            required
+                        >
+
+                            <option value="all">
+                                All Users
+                            </option>
+
+                            <option value="active">
+                                Active Users
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="mb-4">
+
+                        <label class="form-label">
+                            Email Message
+                        </label>
+
+                        <textarea
+                            name="message"
+                            class="form-control"
+                            placeholder="Write your announcement or update here..."
+                            required
+                        ></textarea>
+
+                    </div>
+
+                    <button type="submit" class="send-btn">
+                        <i class="bi bi-send-fill"></i>
+                        Send Campaign
+                    </button>
+
+                </form>
+
+            </div>
+
+            <!-- INFORMATION -->
+            <div>
+
+                <div class="panel">
+
+                    <div class="panel-title">
+                        Campaign Tools
+                    </div>
+
+                    <div class="panel-subtitle">
+                        Manage communication with the Campus Loop community.
+                    </div>
+
+                    <div class="info-card">
+
+                        <div class="info-icon">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+
+                        <div class="info-title">
+                            Audience Management
+                        </div>
+
+                        <div class="info-text">
+                            Send campaigns to all registered users or only active users.
+                        </div>
+
+                    </div>
+
+                    <div class="info-card">
+
+                        <div class="info-icon">
+                            <i class="bi bi-envelope-check-fill"></i>
+                        </div>
+
+                        <div class="info-title">
+                            Bulk Email
+                        </div>
+
+                        <div class="info-text">
+                            One campaign can be delivered to multiple registered users
+                            through Django's email system.
+                        </div>
+
+                    </div>
+
+                    <div class="info-card">
+
+                        <div class="info-icon">
+                            <i class="bi bi-database-check"></i>
+                        </div>
+
+                        <div class="info-title">
+                            Campaign Records
+                        </div>
+
+                        <div class="info-text">
+                            Campaign subject, audience, recipient count and sending
+                            status are stored in the database.
+                        </div>
+
+                    </div>
+
+                    <div class="warning-box">
+                        <i class="bi bi-info-circle-fill"></i>
+                        Current development setup uses Django's console email backend.
+                        Emails are displayed in the terminal instead of being delivered
+                        to real inboxes.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,369 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout | Campus Loop{% endblock %}
+
+{% block extra_css %}
+
+<style>
+    .checkout-container {
+        max-width: 1100px;
+        margin: 15px auto;
+    }
+
+    .page-title {
+        color: #f8fafc;
+        font-size: 2.3rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+    }
+
+    .page-subtitle {
+        color: #94a3b8;
+    }
+
+    .checkout-card,
+    .summary-card {
+        background: #111827;
+        border: 1px solid #243047;
+        border-radius: 18px;
+        padding: 30px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.18);
+    }
+
+    .section-title {
+        color: #f8fafc;
+        font-weight: 700;
+    }
+
+    .section-title i {
+        color: #60a5fa;
+    }
+
+    .form-label {
+        color: #e2e8f0;
+        font-weight: 600;
+    }
+
+    .form-control {
+        background: #0f172a;
+        border: 1px solid #334155;
+        color: #f8fafc;
+        border-radius: 10px;
+        padding: 12px;
+    }
+
+    .form-control:focus {
+        background: #0f172a;
+        color: #f8fafc;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.15);
+    }
+
+    .form-control::placeholder {
+        color: #64748b;
+    }
+
+    .form-text {
+        color: #64748b;
+    }
+
+    .info-box {
+        background: #172033;
+        border: 1px solid #263b5d;
+        color: #cbd5e1;
+        border-radius: 12px;
+        padding: 15px;
+    }
+
+    .info-box i {
+        color: #60a5fa;
+    }
+
+    .summary-card {
+        position: sticky;
+        top: 90px;
+    }
+
+    .summary-title {
+        color: #f8fafc;
+        font-weight: 700;
+    }
+
+    .item {
+        padding: 14px 0;
+        border-bottom: 1px solid #243047;
+    }
+
+    .item-name {
+        color: #e2e8f0;
+        font-weight: 600;
+    }
+
+    .item-price {
+        color: #60a5fa;
+        font-weight: 700;
+    }
+
+    .free {
+        color: #34d399;
+    }
+
+    .quantity {
+        color: #64748b;
+    }
+
+    .summary-divider {
+        border-color: #243047;
+    }
+
+    .total-label {
+        color: #f8fafc;
+        font-weight: 700;
+    }
+
+    .total {
+        color: #60a5fa;
+        font-size: 1.6rem;
+        font-weight: 800;
+    }
+
+    .payment-info {
+        background: #0f172a;
+        border: 1px solid #243047;
+        color: #94a3b8;
+        border-radius: 12px;
+        padding: 15px;
+    }
+
+    .payment-info i {
+        color: #34d399;
+    }
+
+    .checkout-btn {
+        background: #2563eb;
+        border: 1px solid #2563eb;
+        color: white;
+        border-radius: 10px;
+        padding: 13px;
+        font-weight: 600;
+    }
+
+    .checkout-btn:hover {
+        background: #1d4ed8;
+        border-color: #1d4ed8;
+        color: white;
+        transform: translateY(-1px);
+    }
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="checkout-container">
+
+    <!-- Header -->
+
+    <div class="mb-4">
+
+        <h1 class="page-title">
+            Checkout
+        </h1>
+
+        <p class="page-subtitle mb-0">
+            Confirm your order details before placing the order.
+        </p>
+
+    </div>
+
+
+    <div class="row g-4">
+
+        <!-- Delivery Details -->
+
+        <div class="col-lg-7">
+
+            <div class="checkout-card">
+
+                <h4 class="section-title mb-4">
+
+                    <i class="bi bi-geo-alt me-2"></i>
+
+                    Delivery / Handover Details
+
+                </h4>
+
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+
+                    <div class="mb-4">
+
+                        <label class="form-label">
+                            Delivery / Handover Address
+                        </label>
+
+                        <textarea
+                            name="delivery_address"
+                            class="form-control"
+                            rows="5"
+                            placeholder="Enter the location where you will receive or collect the item..."
+                            required
+                        ></textarea>
+
+                        <div class="form-text mt-2">
+
+                            <i class="bi bi-info-circle me-1"></i>
+
+                            For campus transactions, mention a suitable
+                            campus location for handover.
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Handover Information -->
+
+                    <div class="info-box mb-4">
+
+                        <div class="d-flex">
+
+                            <i class="bi bi-chat-dots fs-5 me-3"></i>
+
+                            <div>
+
+                                <strong class="text-light">
+                                    Campus Loop Handover
+                                </strong>
+
+                                <div class="small mt-1">
+                                    After placing the order, the buyer and
+                                    seller can communicate through Campus
+                                    Loop messages to coordinate the handover.
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="btn checkout-btn w-100"
+                    >
+
+                        <i class="bi bi-bag-check me-1"></i>
+
+                        Place Order
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <!-- Order Summary -->
+
+        <div class="col-lg-5">
+
+            <div class="summary-card">
+
+                <h4 class="summary-title mb-4">
+
+                    <i class="bi bi-receipt me-2 text-primary"></i>
+
+                    Order Summary
+
+                </h4>
+
+
+                {% for item in cart_items %}
+
+                    <div class="item">
+
+                        <div class="d-flex justify-content-between gap-3">
+
+                            <span class="item-name">
+
+                                {{ item.product.name }}
+
+                            </span>
+
+
+                            <strong class="item-price">
+
+                                {% if item.product.listing_type == "free" %}
+
+                                    <span class="free">
+                                        FREE
+                                    </span>
+
+                                {% else %}
+
+                                    ₹{{ item.total_price }}
+
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+
+                        <small class="quantity">
+
+                            Quantity: {{ item.quantity }}
+
+                        </small>
+
+                    </div>
+
+                {% endfor %}
+
+
+                <hr class="summary-divider my-4">
+
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <span class="total-label">
+                        Total
+                    </span>
+
+                    <span class="total">
+                        ₹{{ total }}
+                    </span>
+
+                </div>
+
+
+                <!-- Payment Information -->
+
+                <div class="payment-info mt-4">
+
+                    <i class="bi bi-shield-check me-2"></i>
+
+                    <span>
+                        Payment will be handled through the
+                        Campus Loop test-payment flow.
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

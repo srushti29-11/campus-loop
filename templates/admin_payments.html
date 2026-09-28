@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Payments | Campus Loop Admin</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #0b1120;
+            color: #f8fafc;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #0f172a;
+            border-right: 1px solid #243047;
+            padding: 25px 15px;
+            overflow-y: auto;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 12px 25px;
+            color: #60a5fa;
+            font-size: 1.35rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #2563eb;
+            color: white;
+            border-radius: 11px;
+        }
+
+        .sidebar-title {
+            color: #64748b;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 13px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 13px;
+            margin-bottom: 5px;
+            border-radius: 10px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.92rem;
+            transition: 0.2s ease;
+        }
+
+        .sidebar a i {
+            font-size: 1.05rem;
+            width: 20px;
+        }
+
+        .sidebar a:hover {
+            background: #172033;
+            color: #60a5fa;
+        }
+
+        .sidebar a.active {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+        }
+
+        .sidebar-bottom {
+            margin-top: 25px;
+            border-top: 1px solid #243047;
+            padding-top: 15px;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main {
+            margin-left: 250px;
+            min-height: 100vh;
+            padding: 32px;
+        }
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 1.9rem;
+            font-weight: 750;
+            margin: 0;
+        }
+
+        .page-subtitle {
+            color: #94a3b8;
+            margin-top: 5px;
+            font-size: 0.92rem;
+        }
+
+        .view-site {
+            color: #cbd5e1;
+            border: 1px solid #334155;
+            background: #111827;
+            padding: 9px 15px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-size: 0.88rem;
+        }
+
+        .view-site:hover {
+            color: #60a5fa;
+            border-color: #3b82f6;
+        }
+
+        /* ================= STAT CARDS ================= */
+
+        .stat-card {
+            background: #111827;
+            border: 1px solid #243047;
+            border-radius: 15px;
+            padding: 20px;
+            height: 100%;
+        }
+
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #172033;
+            color: #60a5fa;
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+        }
+
+        .stat-number {
+            font-size: 1.65rem;
+            font-weight: 750;
+            color: #f8fafc;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-top: 3px;
+        }
+
+        /* ================= FILTER ================= */
+
+        .filter-box {
+            background: #111827;
+            border: 1px solid #243047;
+            border-radius: 15px;
+            padding: 18px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        .filter-box .form-control,
+        .filter-box .form-select {
+            background: #0b1120;
+            color: #f8fafc;
+            border: 1px solid #334155;
+            border-radius: 9px;
+        }
+
+        .filter-box .form-control:focus,
+        .filter-box .form-select:focus {
+            background: #0b1120;
+            color: #f8fafc;
+            border-color: #3b82f6;
+            box-shadow: none;
+        }
+
+        .filter-box .form-control::placeholder {
+            color: #64748b;
+        }
+
+        .btn-filter {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            padding: 9px 18px;
+            font-weight: 600;
+        }
+
+        .btn-filter:hover {
+            background: #1d4ed8;
+            color: white;
+        }
+
+        /* ================= PAYMENTS TABLE ================= */
+
+        .payments-card {
+            background: #111827;
+            border: 1px solid #243047;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .table {
+            margin: 0;
+        }
+
+        .table > :not(caption) > * > * {
+            background-color: #111827 !important;
+            color: #cbd5e1 !important;
+            border-color: #243047 !important;
+        }
+
+        .table thead th {
+            background: #172033 !important;
+            color: #94a3b8 !important;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            border: none !important;
+            padding: 15px 16px;
+            white-space: nowrap;
+        }
+
+        .table tbody tr {
+            background: #111827 !important;
+            transition: 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background: #151e30 !important;
+        }
+
+        .table tbody td {
+            background: #111827 !important;
+            color: #cbd5e1 !important;
+            border-color: #243047 !important;
+            padding: 16px;
+            vertical-align: middle;
+        }
+
+        .payment-id {
+            color: #f8fafc;
+            font-weight: 650;
+        }
+
+        .order-number {
+            color: #60a5fa;
+            font-weight: 650;
+        }
+
+        .buyer-name {
+            color: #f8fafc;
+            font-weight: 600;
+        }
+
+        .buyer-email {
+            color: #64748b;
+            font-size: 0.77rem;
+        }
+
+        .amount {
+            color: #f8fafc;
+            font-weight: 700;
+        }
+
+        .transaction-id {
+            color: #94a3b8;
+            font-size: 0.78rem;
+            font-family: monospace;
+        }
+
+        /* STATUS */
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 0.74rem;
+            font-weight: 650;
+        }
+
+        .status-success {
+            background: rgba(34, 197, 94, 0.12);
+            color: #4ade80;
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.12);
+            color: #fbbf24;
+        }
+
+        .status-failed {
+            background: rgba(239, 68, 68, 0.12);
+            color: #f87171;
+        }
+
+        /* PAYMENT METHOD */
+
+        .method-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #172033;
+            color: #cbd5e1;
+            padding: 6px 9px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+        }
+
+        .test-badge {
+            display: inline-block;
+            margin-top: 5px;
+            background: rgba(96, 165, 250, 0.1);
+            color: #60a5fa;
+            padding: 3px 7px;
+            border-radius: 5px;
+            font-size: 0.65rem;
+            font-weight: 650;
+        }
+
+        /* EMPTY */
+
+        .empty-state {
+            text-align: center;
+            padding: 65px 20px;
+        }
+
+        .empty-icon {
+            width: 65px;
+            height: 65px;
+            margin: auto;
+            border-radius: 18px;
+            background: #172033;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.7rem;
+            margin-bottom: 15px;
+        }
+
+        .empty-state h5 {
+            color: #f8fafc;
+        }
+
+        .empty-state p {
+            color: #64748b;
+            margin-bottom: 0;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 210px;
+            }
+
+            .main {
+                margin-left: 210px;
+                padding: 22px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid #243047;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .top-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .payments-card {
+                overflow-x: auto;
+            }
+
+            .table {
+                min-width: 1000px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar">
+
+    <a href="{% url 'admin_dashboard' %}" class="brand">
+        <span class="brand-icon">
+            <i class="bi bi-arrow-repeat"></i>
+        </span>
+        Campus Loop
+    </a>
+
+    <div class="sidebar-title">
+        Management
+    </div>
+
+    <a href="{% url 'admin_dashboard' %}">
+        <i class="bi bi-grid-1x2"></i>
+        Dashboard
+    </a>
+
+    <a href="{% url 'admin_products' %}">
+        <i class="bi bi-box-seam"></i>
+        Products
+    </a>
+
+    <a href="{% url 'admin_users' %}">
+        <i class="bi bi-people"></i>
+        Users
+    </a>
+
+    <a href="{% url 'admin_orders' %}">
+        <i class="bi bi-cart-check"></i>
+        Orders
+    </a>
+
+    <a href="{% url 'admin_payments' %}" class="active">
+        <i class="bi bi-credit-card"></i>
+        Payments
+    </a>
+
+    <a href="{% url 'admin_messages' %}">
+        <i class="bi bi-chat-dots"></i>
+        Messages
+    </a>
+
+    <a href="{% url 'admin_notifications' %}">
+        <i class="bi bi-bell"></i>
+        Notifications
+    </a>
+
+    <div class="sidebar-title">
+        Business
+    </div>
+
+    <a href="{% url 'create_campaign' %}">
+        <i class="bi bi-envelope-paper"></i>
+        Email Campaigns
+    </a>
+
+    <a href="{% url 'admin_revenue' %}">
+        <i class="bi bi-graph-up-arrow"></i>
+        Revenue
+    </a>
+
+    <div class="sidebar-bottom">
+
+        <a href="/admin/">
+            <i class="bi bi-gear"></i>
+            Django Admin
+        </a>
+
+        <a href="/">
+            <i class="bi bi-globe2"></i>
+            View Website
+        </a>
+
+    </div>
+
+</aside>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="main">
+
+    <div class="top-header">
+
+        <div>
+
+            <h1 class="page-title">
+                Payments
+            </h1>
+
+            <div class="page-subtitle">
+                Monitor payment transactions and payment status.
+            </div>
+
+        </div>
+
+        <a href="/" class="view-site">
+            <i class="bi bi-box-arrow-up-right me-1"></i>
+            View Website
+        </a>
+
+    </div>
+
+
+    <!-- ================= STATISTICS ================= -->
+
+    <div class="row g-3">
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    <i class="bi bi-credit-card"></i>
+                </div>
+
+                <div class="stat-number">
+                    {{ payments|length }}
+                </div>
+
+                <div class="stat-label">
+                    Total Payments
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+
+                <div class="stat-number">
+                    {{ payments|length }}
+                </div>
+
+                <div class="stat-label">
+                    Payments Shown
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    <i class="bi bi-arrow-down-circle"></i>
+                </div>
+
+                <div class="stat-number">
+                    Test
+                </div>
+
+                <div class="stat-label">
+                    Payment Environment
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+
+                <div class="stat-number">
+                    Secure
+                </div>
+
+                <div class="stat-label">
+                    Transaction Monitoring
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= FILTER ================= -->
+
+    <div class="filter-box">
+
+        <form method="get">
+
+            <div class="row g-2">
+
+                <div class="col-md-5">
+
+                    <input
+                        type="text"
+                        name="search"
+                        class="form-control"
+                        placeholder="Search by buyer name or email..."
+                        value="{{ search }}"
+                    >
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <select
+                        name="status"
+                        class="form-select"
+                    >
+
+                        <option value="">
+                            All Payment Statuses
+                        </option>
+
+                        <option value="pending"
+                            {% if selected_status == "pending" %}selected{% endif %}>
+                            Pending
+                        </option>
+
+                        <option value="success"
+                            {% if selected_status == "success" %}selected{% endif %}>
+                            Successful
+                        </option>
+
+                        <option value="failed"
+                            {% if selected_status == "failed" %}selected{% endif %}>
+                            Failed
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="col-md-3">
+
+                    <button
+                        type="submit"
+                        class="btn-filter w-100"
+                    >
+                        <i class="bi bi-funnel me-1"></i>
+                        Apply Filter
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- ================= PAYMENTS TABLE ================= -->
+
+    <div class="payments-card">
+
+        {% if payments %}
+
+        <div class="table-responsive">
+
+            <table class="table">
+
+                <thead>
+
+                    <tr>
+                        <th>Payment</th>
+                        <th>Order</th>
+                        <th>Buyer</th>
+                        <th>Amount</th>
+                        <th>Method</th>
+                        <th>Status</th>
+                        <th>Transaction</th>
+                        <th>Date</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for payment in payments %}
+
+                    <tr>
+
+                        <!-- Payment -->
+
+                        <td>
+
+                            <div class="payment-id">
+                                Payment #{{ payment.id }}
+                            </div>
+
+                            <span class="test-badge">
+                                TEST MODE
+                            </span>
+
+                        </td>
+
+
+                        <!-- Order -->
+
+                        <td>
+
+                            <span class="order-number">
+                                #{{ payment.order.id }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- Buyer -->
+
+                        <td>
+
+                            <div class="buyer-name">
+
+                                {{ payment.buyer.first_name }}
+                                {{ payment.buyer.last_name }}
+
+                            </div>
+
+                            <div class="buyer-email">
+                                {{ payment.buyer.email }}
+                            </div>
+
+                        </td>
+
+
+                        <!-- Amount -->
+
+                        <td>
+
+                            <span class="amount">
+                                ₹{{ payment.amount }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- Method -->
+
+                        <td>
+
+                            <span class="method-badge">
+
+                                {% if payment.payment_method == "test_card" %}
+
+                                    <i class="bi bi-credit-card"></i>
+                                    Test Card
+
+                                {% elif payment.payment_method == "upi" %}
+
+                                    <i class="bi bi-phone"></i>
+                                    UPI Test
+
+                                {% elif payment.payment_method == "cod" %}
+
+                                    <i class="bi bi-cash"></i>
+                                    Cash on Delivery
+
+                                {% else %}
+
+                                    <i class="bi bi-wallet2"></i>
+                                    {{ payment.get_payment_method_display }}
+
+                                {% endif %}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- Status -->
+
+                        <td>
+
+                            {% if payment.status == "success" %}
+
+                                <span class="status-badge status-success">
+                                    <i class="bi bi-check-circle"></i>
+                                    Successful
+                                </span>
+
+                            {% elif payment.status == "pending" %}
+
+                                <span class="status-badge status-pending">
+                                    <i class="bi bi-clock"></i>
+                                    Pending
+                                </span>
+
+                            {% else %}
+
+                                <span class="status-badge status-failed">
+                                    <i class="bi bi-x-circle"></i>
+                                    Failed
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Transaction -->
+
+                        <td>
+
+                            {% if payment.transaction_id %}
+
+                                <span class="transaction-id">
+                                    {{ payment.transaction_id }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="buyer-email">
+                                    Not generated
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Date -->
+
+                        <td>
+
+                            <span class="buyer-email">
+                                {{ payment.created_at|date:"d M Y" }}
+                            </span>
+
+                            <br>
+
+                            <span class="buyer-email">
+                                {{ payment.created_at|date:"h:i A" }}
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                <i class="bi bi-credit-card-2-front"></i>
+            </div>
+
+            <h5>
+                No payments found
+            </h5>
+
+            <p>
+                Payment transactions will appear here after users complete checkout.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</main>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+</body>
+</html>
